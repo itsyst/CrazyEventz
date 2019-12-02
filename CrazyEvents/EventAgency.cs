@@ -215,8 +215,20 @@ namespace CrazyEvents
         }
         private void ShowEvents()
         {
-            Console.WriteLine("---Show-Events---");
+            Console.Clear();
+            Console.WriteLine("---Here are all the upcoming Events---");
             List<Event> events = dataBase.GetAllEvents(); //Gets all the events from the database and stores them in to a list called events.
+  
+            for (int i = 0; i < events.Count; i++)
+            {
+                Console.WriteLine($"\nEvent {i + 1}");
+                Console.Write($"Name: {events[i].Name}");
+                Console.Write($"\nDescription: {events[i].Description}");
+                Console.Write($"\nDate: {events[i].Date}\n");
+            }
+            Console.WriteLine("\n\nPress enter to return to the previous menu");
+            Console.ReadLine();
+            Console.Clear();
 
         }
         private void ShowTickets()
