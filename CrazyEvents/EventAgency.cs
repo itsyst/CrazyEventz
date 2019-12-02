@@ -27,6 +27,7 @@ namespace CrazyEvents
                         break;
                     case 3:
                         Console.WriteLine("Logging out");
+                        running = false;
                         break;
 
                 }
@@ -35,7 +36,7 @@ namespace CrazyEvents
         }
         private int StartMenu()
         {
-
+            int choice = 0;
             Console.WriteLine("------------");
             Console.WriteLine("1. Login");
             Console.WriteLine("2. Register");
@@ -43,7 +44,7 @@ namespace CrazyEvents
             Console.WriteLine("------------");
 
             Console.Write("> ");
-            int choice = int.Parse(Console.ReadLine());
+            choice = int.Parse(Console.ReadLine());
 
             return choice;
 
@@ -215,6 +216,8 @@ namespace CrazyEvents
         private void ShowEvents()
         {
             Console.WriteLine("---Show-Events---");
+            List<Event> events = dataBase.GetAllEvents(); //Gets all the events from the database and stores them in to a list called events.
+
         }
         private void ShowTickets()
         {

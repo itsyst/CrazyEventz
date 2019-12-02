@@ -9,7 +9,7 @@ namespace CrazyEvents
         public int ID;
         public string Name;
         public string Description;
-        public DateTime Date;
+        public string Date;
         public int VenueID;
 
     }

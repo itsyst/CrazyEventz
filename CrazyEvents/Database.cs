@@ -196,5 +196,39 @@ namespace CrazyEvents
             }
         }
 
+        public List<Event> GetAllEvents()
+        {
+            string sqlQuery = "SELECT * FROM [Event]"; // Query to run against the DB
+
+            List<Event> events = new List<Event>(); 
+
+            using (var myConnection = new SqlConnection(connectionString)) // Prepare connection to the db
+            {
+                SqlCommand sqlCommand = new SqlCommand(sqlQuery, myConnection); // Prepare the query for the db
+
+                myConnection.Open(); // Open connection to the db
+
+                using (SqlDataReader dataReader = sqlCommand.ExecuteReader()) // Run query on db
+                {
+                    while (dataReader.Read()) // Read response from db (all rows)
+                    {
+                        Event @event = new Event(); // create new User object
+
+                        @event.ID = int.Parse(dataReader["Id"].ToString()); // Set user Id from db
+                        @event.Name = dataReader["Name"].ToString(); // Set user Username from db
+                        @event.Description = dataReader["Description"].ToString(); // Set user Password from db
+                        @event.Date = dataReader["Date"].ToString();
+                        @event.VenueID = int.Parse(dataReader["VenueId"].ToString());
+
+                        events.Add(@event); // Add last user to list of users
+                    }
+
+                    myConnection.Close(); // Close connection to the db
+                }
+            }
+
+            return events; // Return all users
+        }
+
     }
 }
