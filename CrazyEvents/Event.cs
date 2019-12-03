@@ -11,6 +11,8 @@ namespace CrazyEvents
         public string Description;
         public string Date;
         public int VenueID;
+        public int EventPrice; // Added an extra property
+        
 
     }
 }

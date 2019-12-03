@@ -215,13 +215,73 @@ namespace CrazyEvents
         }
         private void ShowEvents()
         {
-            Console.WriteLine("---Show-Events---");
+       
+            Console.Clear();
+            Console.WriteLine("---Here are all the upcoming Events---");
             List<Event> events = dataBase.GetAllEvents(); //Gets all the events from the database and stores them in to a list called events.
+            for (int i = 0; i < events.Count; i++)
+            {
+                Console.WriteLine($"\nEvent {i + 1}");
+                Console.Write($"Name: {events[i].Name}");
+                Console.Write($"\nDescription: {events[i].Description}");
+                Console.Write($"\nDate: {events[i].Date}");
+                Console.Write($"\nPrice: {events[i].EventPrice}\n");
+            }
+
+            Console.WriteLine("\nDo you want to buy a ticket to one of these events? y/n");
+            while (true)
+            {
+                string answer = Console.ReadLine();
+                if (answer.ToLower() == "y")
+                {
+                        Console.WriteLine("Enter the number of the event:");
+                        string input = Console.ReadLine();
+                        int eventNumber = int.Parse(input);
+
+                    Ticket ticket = new Ticket();
+                    ticket.Price = 0; // måste vi senare hitta en lösning för - for now gave it a default, get rid of this property in database and class for example
+                    ticket.UserID = loggedInUser.Id;
+                    ticket.EventID = events[eventNumber - 1].ID;
+
+                    dataBase.addTicket(ticket);
+                }
+                else
+                {
+                    break;
+                }
+                Console.WriteLine("Do you want to purchase another one? y/n");
+            }
+            Console.WriteLine("\n\nPress enter to return to the Visitor menu");
+            Console.ReadLine();
+            Console.Clear();
 
         }
         private void ShowTickets()
         {
+            Console.Clear();
+            // I wrote a method i Database first to get 1 event by userid , but somehow i could not get it it to work, so I just 
+            // called the getallevents method and than looped through it to get the name and date of the event we want to display
+            List<Event> allEvents = dataBase.GetAllEvents();
+            Console.WriteLine("Here are the tickets you have booked: ");
+            
+            string userIDstring = loggedInUser.Id.ToString();
+            List<Ticket> tickets = dataBase.GetTicketsByUserID(userIDstring);
+            for (int i = 0; i < tickets.Count; i++)
+            {
+                Console.WriteLine($"Ticket {i+1}: ");
+                for (int y = 0; y < allEvents.Count; y++)
+                {
+                    if(allEvents[y].ID == tickets[i].EventID)
+                    {
+                        Console.Write($"Event name: {allEvents[y].Name}\n");
+                        Console.Write($"Event date: {allEvents[y].Date}\n");
+                    }
+                }
+             }
 
+            Console.WriteLine("Press enter to return to the previous menu");
+            Console.ReadLine();
+            Console.Clear();
         }
         private void HandleEvents()
         {

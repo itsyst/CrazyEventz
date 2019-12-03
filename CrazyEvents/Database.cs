@@ -196,11 +196,70 @@ namespace CrazyEvents
             }
         }
 
+        public void addTicket(Ticket ticket)
+        {
+            string sqlQuery = $"INSERT INTO[Ticket] (Price, UserId, EventId) " +
+                $"VALUES ('{ticket.Price}', '{ticket.UserID}', '{ticket.EventID}')";
+            // Query to run against the DB
+
+            using (SqlConnection myConnection = new SqlConnection(connectionString)) // Prepare connection to the db
+            {
+                SqlCommand sqlCommand = new SqlCommand(sqlQuery, myConnection); // Prepare the query for the db
+
+
+                myConnection.Open(); // Open connection to the db
+
+                using (SqlDataReader dataReader = sqlCommand.ExecuteReader()) // Run query on db
+                {
+                    myConnection.Close(); // Close connection to the db
+                }
+            }
+        }
+
+     
+        public List<Ticket> GetTicketsByUserID(string userid)
+        {
+            string sqlQuery = "SELECT * FROM [Ticket] WHERE [UserId]=@userid"; // Query to run against the DB
+
+            List<Ticket> tickets = new List<Ticket>(); // Start with an ampty list of users
+
+            using (var myConnection = new SqlConnection(connectionString)) // Prepare connection to the db
+            {
+                SqlCommand sqlCommand = new SqlCommand(sqlQuery, myConnection); // Prepare the query for the db
+
+                sqlCommand.Parameters.AddWithValue("@userid", userid);
+
+                myConnection.Open(); // Open connection to the db
+
+                using (SqlDataReader dataReader = sqlCommand.ExecuteReader()) // Run query on db
+                {
+                    while (dataReader.Read()) // Read response from db (all rows)
+                    {
+                        Ticket ticket = new Ticket(); // create new ticket object
+
+                        ticket.Id = int.Parse(dataReader["Id"].ToString()); // Set ticket Id from db
+                        //ticket.Price = int.Parse(dataReader["Price"].ToString()); // Set ticket price from db, commented it out, this is throwing expection, not solved yet
+                        ticket.UserID = int.Parse(dataReader["UserId"].ToString()); // Set user id  from db
+                        ticket.EventID = int.Parse(dataReader["EventId"].ToString());// Set event ID from db
+
+                        tickets.Add(ticket); // Add last ticket to list of tickets
+                    }
+
+                    myConnection.Close(); // Close connection to the db
+                }
+
+
+            }
+
+            return tickets; // Return all tickets 
+        }
+
+
         public List<Event> GetAllEvents()
         {
             string sqlQuery = "SELECT * FROM [Event]"; // Query to run against the DB
 
-            List<Event> events = new List<Event>(); 
+            List<Event> events = new List<Event>();
 
             using (var myConnection = new SqlConnection(connectionString)) // Prepare connection to the db
             {
@@ -219,6 +278,7 @@ namespace CrazyEvents
                         @event.Description = dataReader["Description"].ToString(); // Set user Password from db
                         @event.Date = dataReader["Date"].ToString();
                         @event.VenueID = int.Parse(dataReader["VenueId"].ToString());
+                        @event.EventPrice = int.Parse(dataReader["Price"].ToString()); //added an extra property , also in DB  
 
                         events.Add(@event); // Add last user to list of users
                     }
