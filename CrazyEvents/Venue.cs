@@ -6,9 +6,9 @@ namespace CrazyEvents
 {
     class Venue
     {
-        public int Id;
-        public string name;
-        public string Location;
-        public int MaxCapacity;
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Location { get; set; }
+        public int VenueSize { get; set; }
     }
 }

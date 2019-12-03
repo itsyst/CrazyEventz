@@ -4,15 +4,9 @@ using System.Text;
 
 namespace CrazyEvents
 {
-    class Role
+    public class Role
     {
-        public string Name;
-        public int Id;
-
-        public Role()
-        {
-            Id = 5;
-        }
-        
+        public int Id { get; set; }
+        public string Name { get; set; }
     }
 }

@@ -6,10 +6,10 @@ namespace CrazyEvents
 {
     class Ticket
     {
-        public int Id;
-        public int UserID;
-        public int EventID;
-        public int Price;
+        public int Id { get; set; }
+        public int Amount { get; set; }
+        public int UserId { get; set; }
+        public int EventId { get; set; }
 
     }
 }

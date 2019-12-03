@@ -6,13 +6,11 @@ namespace CrazyEvents
 {
     class Event
     {
-        public int ID;
-        public string Name;
-        public string Description;
-        public string Date;
-        public int VenueID;
-        public int EventPrice; // Added an extra property
-        
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public string Date { get; set; }
+        public int VenueId { get; set; }
 
     }
 }

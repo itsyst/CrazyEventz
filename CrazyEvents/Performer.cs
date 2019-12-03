@@ -4,11 +4,11 @@ using System.Text;
 
 namespace CrazyEvents
 {
-    class Performer
+    public class Performer
     {
-        public int Id;
-        public string name;
-        public int VenueID;
-
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Time { get; set; }
+        public int VenueId { get; set; }
     }
 }

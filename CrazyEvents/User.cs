@@ -4,24 +4,25 @@ using System.Text;
 
 namespace CrazyEvents
 {
-    class User
+    public class User
     {
+        public readonly Role role = new Role();
 
-        public int Id;
-        public string Name;
-        public string Username;
-        public string Password;
-        public string Email;
-        public string OrgNumber;
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Username { get; set; }
+        public string Password { get; set; }
+        public string Email { get; set; }
+        public string OrgNumber { get; set; }
+        public int RoleId { get; set; }
+        public string SSN { get; set; }
 
-        public Role role = new Role(); 
-        
 
         public void setPassword(string newPassword)
         {
             Password = newPassword;
         }
-        public void setSSN(string newOrgNumber)
+        public void setOrgNumber(string newOrgNumber)
         {
             OrgNumber = newOrgNumber;
         }
@@ -30,17 +31,20 @@ namespace CrazyEvents
             Email = newEmail;
 
         }
+        public void setSSN(string newSSN)
+        {
+            SSN = newSSN;
+        }
         public bool checkPassword(string inputPassword)
         {
-            if(inputPassword == Password)
+            if (inputPassword == Password)
             {
                 return true;
             }
-            else
-            {
-                return false;
-            }
+
+            return false;
         }
+
 
     }
 }
