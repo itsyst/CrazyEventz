@@ -127,7 +127,7 @@ namespace CrazyEvents
             string ssn = Console.ReadLine();
             user.setSSN(ssn);
 
-            // I haven't build a check for user yet
+            // We still need to built a control here...to check if username and so on already exists
             user.role.Id = 4;
             dataBase.addUser(user);
             loggedInUser = user;
@@ -161,7 +161,7 @@ namespace CrazyEvents
             }
 
         }
-        
+
         private void ShowAdminMenu()
         {
             while (loggedInUser != null)
@@ -222,11 +222,12 @@ namespace CrazyEvents
 
             Console.Clear();
             Console.WriteLine("---Here are all the upcoming Events---");
-            List<Event> events = dataBase.GetAllEvents(); //Gets all the events from the database and stores them in to a list called events.
+            List<Event> events = dataBase.GetAllEvents();
             for (int i = 0; i < events.Count; i++)
             {
                 Console.WriteLine($"\nEvent {i + 1}");
-                Console.Write($"Name: {events[i].Name}");
+                Console.Write($"\nName: {events[i].Name}");
+                Console.Write($"\nEvent ID: {events[i].ID}");
                 Console.Write($"\nDescription: {events[i].Description}");
                 Console.Write($"\nDate: {events[i].Date}");
                 Console.Write($"\nPrice: {events[i].EventPrice}\n");
@@ -244,7 +245,7 @@ namespace CrazyEvents
                         int eventNumber = int.Parse(input);
 
                         Ticket ticket = new Ticket();
-                        ticket.Price = 0; // måste vi senare hitta en lösning för - for now gave it a default, get rid of this property in database and class for example
+                        ticket.Price = 0; // We don't use it, since we have Price as property of Event now.. so we still need to do a clean up later, get rid of this property everywhere...
                         ticket.UserID = loggedInUser.Id;
                         ticket.EventID = events[eventNumber - 1].ID;
 
@@ -266,8 +267,7 @@ namespace CrazyEvents
         private void ShowTickets()
         {
             Console.Clear();
-            // I wrote a method i Database first to get 1 event by userid , but somehow i could not get it it to work, so I just 
-            // called the getallevents method and than looped through it to get the name and date of the event we want to display
+            // Smoother option would be to get 1 event by userid 
             List<Event> allEvents = dataBase.GetAllEvents();
             Console.WriteLine("Here are the tickets you have booked: ");
 
@@ -321,26 +321,26 @@ namespace CrazyEvents
 
             var eventss = new Event();
 
-                eventss.ID = 0;
-            
-                Console.Write("Type events name: ");
-                string inputEvName = Console.ReadLine();
+            eventss.ID = 0;
+
+            Console.Write("Type events name: ");
+            string inputEvName = Console.ReadLine();
             eventss.Name = inputEvName;
-                Console.Write("Add a description: ");
-                var inputDescription = Console.ReadLine();
+            Console.Write("Add a description: ");
+            var inputDescription = Console.ReadLine();
             eventss.Description = inputDescription;
-                Console.Write("Add the event date opening: yyyy-mm-dd ");
-                var inputOpening = Console.ReadLine();
-            eventss.Date = inputOpening; 
-                Console.WriteLine("Where does this event take place?");
+            Console.Write("Add the event date opening: yyyy-mm-dd ");
+            var inputOpening = Console.ReadLine();
+            eventss.Date = inputOpening;
+            Console.WriteLine("Where does this event take place?");
 
             List<Venue> venues = dataBase.GetAllVenues();
             Console.WriteLine("Here's a list of venues to choose from...: ");
             for (int i = 0; i < venues.Count; i++)
             {
-                Console.Write($"Venue ID: {venues[i].Id}");
-                Console.Write($"Venue Name: {venues[i].name}");
-                Console.Write($"Venue Location: {venues[i].Location}");
+                Console.Write($"Venue ID: {venues[i].Id} ");
+                Console.Write($"Venue Name: {venues[i].name} ");
+                Console.Write($"Venue Location: {venues[i].Location} ");
                 Console.Write($"Venue Capacity: {venues[i].MaxCapacity}\n");
             }
             Console.Write("Enter the ID of the venue you want to hold your event: ");
@@ -351,24 +351,42 @@ namespace CrazyEvents
             eventss.EventPrice = int.Parse(input);
             dataBase.AddEvent(eventss);
             Console.WriteLine("\nThank you for adding your event...");
-            
+
 
         }
 
 
         private void DeleteEvent()
         {
+            
             Console.WriteLine("What is the name of the event you want to delete");
+            // This code could be better....more user friendly
+            Console.WriteLine("...If you forgot enter -1 and then choose previous menu - check Show All Events first.");
+            
             string eventToDelete = Console.ReadLine();
+            if(eventToDelete == "-1")
+            {
+                return;
+            }
+            Console.WriteLine("What is the ID of the event you want to delete");
+            Console.WriteLine("...If you forgot enter -1 and then choose previous menu - check Show All Events first.");
+    
+            int idEventToDelete = int.Parse(Console.ReadLine());
+            if (idEventToDelete == -1)
+            {
+                return;
+            }
+            dataBase.RemoveMessages(idEventToDelete);
+            dataBase.RemoveTickets(idEventToDelete);
             dataBase.DeleteEvent(eventToDelete);
-
-
         }
+
         private void HandleUsers()
         {
 
 
-            while (true) {
+            while (true)
+            {
                 Console.WriteLine("---Handle-Users---");
                 Console.WriteLine("1. Show all users");
                 Console.WriteLine("2. Delete a user");
@@ -396,8 +414,8 @@ namespace CrazyEvents
         }
         private void ShowAllUsers()
         {
-            List <User> users = dataBase.GetAllUsers();
-            
+            List<User> users = dataBase.GetAllUsers();
+
             for (int i = 0; i < users.Count; i++)
             {
                 Console.Write($"Username: {users[i].Username}\n");
@@ -410,7 +428,7 @@ namespace CrazyEvents
             Console.Write("Enter the username of the user you want to remove:");
             string userToDelete = Console.ReadLine();
             dataBase.DeleteUser(userToDelete);
-            
+
         }
     }
 }

@@ -254,7 +254,43 @@ namespace CrazyEvents
             return tickets; // Return all tickets 
         }
 
+        
+        public List<Ticket> GetTicketsByEventID(int eventID)
+        {
+            string sqlQuery = "SELECT * FROM [Ticket] WHERE [EventID]=@eventid"; // Query to run against the DB
 
+            List<Ticket> tickets = new List<Ticket>(); // Start with an ampty list of users
+
+            using (var myConnection = new SqlConnection(connectionString)) // Prepare connection to the db
+            {
+                SqlCommand sqlCommand = new SqlCommand(sqlQuery, myConnection); // Prepare the query for the db
+
+                sqlCommand.Parameters.AddWithValue("@eventid", eventID);
+
+                myConnection.Open(); // Open connection to the db
+
+                using (SqlDataReader dataReader = sqlCommand.ExecuteReader()) // Run query on db
+                {
+                    while (dataReader.Read()) // Read response from db (all rows)
+                    {
+                        Ticket ticket = new Ticket(); // create new ticket object
+
+                        ticket.Id = int.Parse(dataReader["Id"].ToString()); // Set ticket Id from db
+                        //ticket.Price = int.Parse(dataReader["Price"].ToString()); // Set ticket price from db, commented it out, this is throwing expection, not solved yet
+                        ticket.UserID = int.Parse(dataReader["UserId"].ToString()); // Set user id  from db
+                        ticket.EventID = int.Parse(dataReader["EventId"].ToString());// Set event ID from db
+
+                        tickets.Add(ticket); // Add last ticket to list of tickets
+                    }
+
+                    myConnection.Close(); // Close connection to the db
+                }
+
+
+            }
+
+            return tickets; // Return all tickets 
+        }
         public List<Event> GetAllEvents()
         {
             string sqlQuery = "SELECT * FROM [Event]"; // Query to run against the DB
@@ -289,6 +325,7 @@ namespace CrazyEvents
 
             return events; // Return all events
         }
+
 
         public List<Venue> GetAllVenues()
         {
@@ -385,6 +422,45 @@ namespace CrazyEvents
             }
         }
 
+        public void RemoveTickets(int eventID)
+        {
+            string sqlQuery = $"DELETE FROM [Ticket] WHERE EventId=@eventid";
+            // Query to run against the DB
+            //INSERT INTO[User] (Name, Username, Password, Email, OrgNumber, RoleId) VALUES ('Leanne Graham', 'Leanne', 'Leanne123', 'Sincere@april.biz', '555666-0001', 1)
+
+            using (SqlConnection myConnection = new SqlConnection(connectionString)) // Prepare connection to the db
+            {
+                SqlCommand sqlCommand = new SqlCommand(sqlQuery, myConnection); // Prepare the query for the db
+
+                sqlCommand.Parameters.AddWithValue("@eventid", eventID);
+                myConnection.Open(); // Open connection to the db
+
+                using (SqlDataReader dataReader = sqlCommand.ExecuteReader()) // Run query on db
+                {
+                    myConnection.Close(); // Close connection to the db
+                }
+            }
+        }
+
+        public void RemoveMessages(int eventID)
+        {
+            string sqlQuery = $"DELETE FROM [Message] WHERE EventId=@eventID";
+            // Query to run against the DB
+            //INSERT INTO[User] (Name, Username, Password, Email, OrgNumber, RoleId) VALUES ('Leanne Graham', 'Leanne', 'Leanne123', 'Sincere@april.biz', '555666-0001', 1)
+
+            using (SqlConnection myConnection = new SqlConnection(connectionString)) // Prepare connection to the db
+            {
+                SqlCommand sqlCommand = new SqlCommand(sqlQuery, myConnection); // Prepare the query for the db
+
+                sqlCommand.Parameters.AddWithValue("@eventID", eventID);
+                myConnection.Open(); // Open connection to the db
+
+                using (SqlDataReader dataReader = sqlCommand.ExecuteReader()) // Run query on db
+                {
+                    myConnection.Close(); // Close connection to the db
+                }
+            }
+        }
 
     }
 }
