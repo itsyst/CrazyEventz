@@ -198,8 +198,58 @@ namespace CrazyEvents
             }
         }
 
+        public void SetEvent(Event events)
+        {
+            string sqlQuery =   $"INSERT INTO dbo.Event (Name, Description, Date)  " +
+                                $"VALUES (@Name, @Description, @Date)";
 
 
+            // Query to run against the DB
+
+            using (SqlConnection myConnection = new SqlConnection(connectionString)) // Prepare connection to the db
+            {
+                SqlCommand sqlCommand = new SqlCommand(sqlQuery, myConnection); // Prepare the query for the db
+
+                //Pass values to Parameters
+                sqlCommand.Parameters.AddWithValue("@Name", $"{events.Name}");
+                sqlCommand.Parameters.AddWithValue("@Description", $"{events.Description}");
+                sqlCommand.Parameters.AddWithValue("@Date", Convert.ToDateTime($"{events.Date}"));
+           
+
+
+                myConnection.Open(); // Open connection to the db
+
+                using (SqlDataReader dataReader = sqlCommand.ExecuteReader()) // Run query on db
+                {
+                    myConnection.Close(); // Close connection to the db
+                }
+            }
+        }
+
+        public void SetVenue(Venue venues)
+        {
+            var sqlQuery = $"INSERT INTO Venue(Name, Location, VenueSize)  " +
+                           $"VALUES (@Name, @Location,  @VenueSize)";
+
+
+            using (var myConnection = new SqlConnection(connectionString)) // Prepare connection to the db
+            {
+                var sqlCommand = new SqlCommand(sqlQuery, myConnection); // Prepare the query for the db
+
+                //Pass values to Parameters
+                sqlCommand.Parameters.AddWithValue("@Name", $"{venues.Name}");
+                sqlCommand.Parameters.AddWithValue("@Location", $"{venues.Location}");
+                sqlCommand.Parameters.AddWithValue("@VenueSize", $"{venues.VenueSize}");
+
+
+                myConnection.Open(); // Open connection to the db
+
+                using (var dataReader = sqlCommand.ExecuteReader()) // Run query on db
+                {
+                    myConnection.Close(); // Close connection to the db
+                }
+            }
+        }
 
 
 
@@ -215,6 +265,71 @@ namespace CrazyEvents
         *          
         *=========================================== */
 
+        public List<User> GetAllUsers()
+        {
+            var sqlQuery = "SELECT * FROM [User] LEFT JOIN[Role] ON [User].RoleId = [Role].Id";
+            var users = new List<User>();
+
+            using (var myConnection = new SqlConnection(connectionString))
+            {
+                var sqlCommand = new SqlCommand(sqlQuery, myConnection);
+                myConnection.Open();
+
+                using (var dataReader = sqlCommand.ExecuteReader())
+                {
+                    while (dataReader.Read())
+                    {
+                        var user = new User
+                        {
+                            Id = int.Parse(dataReader["Id"].ToString()),
+                            Name = dataReader["Name"].ToString(),
+                            Username = dataReader["Username"].ToString(),
+                            Password = dataReader["Password"].ToString(),
+                            Email = dataReader["Email"].ToString(),
+                            OrgNumber = dataReader["OrgNumber"].ToString(),
+                            RoleId = int.Parse(dataReader["RoleId"].ToString()),
+                            SSN = dataReader["SSN"].ToString()
+                        };
+
+                        users.Add(user);
+                    }
+                    myConnection.Close();
+                }
+
+            }
+
+            return users;
+        }
+
+        public List<Role> GetAllRoles()
+        {
+            var sqlQuery = "SELECT * FROM [Role]";
+            var roles = new List<Role>();
+
+            using (var myConnection = new SqlConnection(connectionString))
+            {
+                var sqlCommand = new SqlCommand(sqlQuery, myConnection);
+                myConnection.Open();
+
+                using (var dataReader = sqlCommand.ExecuteReader())
+                {
+                    while (dataReader.Read())
+                    {
+                        var role = new Role
+                        {
+                            Id = int.Parse(dataReader["Id"].ToString()),
+                            Name = dataReader["Name"].ToString(),
+                        };
+
+                       roles.Add(role);
+                    }
+                    myConnection.Close();
+                }
+
+            }
+            return roles;
+
+        }
         public User GetUserByUsername(string username)
         {
             string sqlQuery = "SELECT * FROM [User] WHERE [Username] LIKE @username"; // Query to run against the DB

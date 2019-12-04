@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
 using System.Text;
 
@@ -147,6 +148,8 @@ namespace CrazyEvents
                 {
                     case "1":
                         Console.WriteLine("\nCreating an event...");
+                        CreateEvent();
+                        ShowAdminMenu();
                         break;
                     case "2":
                         Console.WriteLine("\nShowing events..");
@@ -155,13 +158,17 @@ namespace CrazyEvents
                         break;
                     case "3":
                         Console.WriteLine("\nDeleting the event..");
+                        HandleEvents();
+                        DeleteTicket();
                         break;
                     case "4":
                         Console.WriteLine("\nCreating a ticket..");
-
+                        CreateTicket();
+                        ShowAdminMenu();
                         break;
                     case "5":
                         Console.WriteLine("\nDeleting the ticket..");
+                        DeleteTicket();
                         break;
                     case "6":
                         Console.WriteLine("\nShowing tickets..");
@@ -170,11 +177,13 @@ namespace CrazyEvents
                         break;
                     case "7":
                         Console.WriteLine("\nShowing All users..");
-                        HandleUsers();
+                        ShowUsers();
+                        ShowAdminMenu();
                         break;
                     case "8":
                         Console.WriteLine("\nDeleting the user account..");
                         HandleUsers();
+                        ShowAdminMenu();
                         break;
                     case "0":
                         loggedInUser = null;
@@ -420,9 +429,65 @@ namespace CrazyEvents
         }
 
 
-        //=========================================
-        // Ticket And Event Menu
-        //=========================================
+
+
+
+
+
+    //=========================================
+    // Manage Events 
+    //=========================================
+
+        private void CreateEvent()
+        {
+
+            var eventss = new Event();
+            var venuess = new Venue();
+
+            Console.Write("Type events name: ");
+            var inputEvName = Console.ReadLine();
+            Console.Write("Add a description: ");
+            var inputDescription = Console.ReadLine();
+            Console.Write("Add the event date opening: ");
+            var inputOpening = Console.ReadLine();
+            Console.WriteLine("Where does this event take place?");
+            Console.Write("Add a Venue name: ");
+            var inputVenuName = Console.ReadLine();
+            Console.Write("Add the Location: ");
+            var inputLocation = Console.ReadLine();
+            Console.Write("Add Venue size (number): ");
+            var inputSize = Console.ReadLine();
+            int size = int.Parse(inputSize);
+            Console.Write("Verify your information, are they correct? (Y/N): ");
+            var inputInfo = Console.ReadLine();
+            if (inputInfo != null && inputInfo.ToLower() == "n")
+
+            {
+                Console.Write("\nRetype events entries! ");
+                CreateEvent();
+            }
+            else
+            {
+                Console.Write("Hit enter to save this event");
+
+                venuess.Name = inputVenuName;
+                venuess.Location = inputLocation;
+                venuess.VenueSize = int.Parse(inputSize);
+                eventss.Name = inputEvName;
+                eventss.Description = inputDescription;
+                eventss.Date = inputOpening;
+
+
+
+                dataBase.SetEvent(eventss);
+                dataBase.SetVenue(venuess);
+
+                Console.Write("\nEvent created successfully!");
+                Console.Write("Push enter to return to menu");
+                Console.ReadLine();
+            }
+
+        }
 
         /// <summary>
         /// Represents a function to show all events
@@ -440,7 +505,7 @@ namespace CrazyEvents
                 Console.WriteLine("Date\t             | Event name\t  | Price\t");
                 Console.WriteLine($"{events[i].Date}\t" +
                                   $"{events[i].Name}       \t" +
-                                  $"    {tickets[i].Amount}       \n\t" +
+                                  $"    {tickets[i].Amount}       \n" +
                                   $"Description: { events[i].Description}\t");
                 var _builder = new StringBuilder();
                 Console.WriteLine(_builder.Append('-', 90));
@@ -451,6 +516,41 @@ namespace CrazyEvents
 
 
         }
+
+        /// <summary>
+        /// Represents a managing of events (Delete an event)
+        /// </summary>
+        private void HandleEvents()
+        {
+            // TODO-
+            Console.WriteLine("---Handle-Events");
+        }
+
+
+
+
+
+    //=========================================
+    // Ticket  Menu
+    //=========================================
+
+        /// <summary>
+        /// Merges a new ticket in database
+        /// </summary>
+        private void CreateTicket()
+        {
+            // TODO - add Ticket is already in database , use that
+        }
+
+
+        /// <summary>
+        /// Delets a ticket from database
+        /// </summary>
+        private void DeleteTicket()
+        {
+            // TODO - add databse function to drop/alter Rows
+        }
+
 
         /// <summary>
         /// Returns a list of all tickets
@@ -518,7 +618,7 @@ namespace CrazyEvents
         }
 
         /// <summary>
-        /// Returns a list of tickets by username
+        /// Returns a list of tickets by use rname
         /// </summary>
         private void ShowTicketsByUsername()
         {
@@ -544,26 +644,53 @@ namespace CrazyEvents
 
 
 
-        //=========================================
-        // Manage Events and users
-        //=========================================
+
+    //=========================================
+    // Manage USERS
+    //=========================================
+
 
         /// <summary>
-        /// Represents a managing of events
+        /// Returns all users from databse
         /// </summary>
-        private void HandleEvents()
+        private void ShowUsers()
         {
-            Console.WriteLine("---Handle-Events");
+            
+            var users = dataBase.GetAllUsers();
+
+            Console.WriteLine("Name            \tUsername   \t Password    \tEmail");
+
+            for (var i = 0; i < users.Count; i++)
+            {
+                Console.WriteLine($"{users[i].Name}    \t" +
+                                  $"{users[i].Username}  \t " +
+                                  $"{users[i].Password}\t" + 
+                                  $"{users[i].Email}\t");
+               
+            }
+
+            Console.WriteLine("\n-----------------------------");
+            Console.Write("Press enter to return to menu: ");
+            Console.ReadLine();
         }
 
+    
         /// <summary>
-        /// Represents a managing of user
+        /// Represents a managing of user (Delete user)
         /// </summary>
         private void HandleUsers()
         {
+           
+            //TODO -
             Console.WriteLine("---Handle-Users---");
 
         }
+
+
+
+    //=========================================
+    // Error function
+    //=========================================
 
         /// <summary>
         /// Throws an error message when login is incorrect
@@ -573,6 +700,11 @@ namespace CrazyEvents
             Console.WriteLine("Wrong Password");
 
         }
+    
+   
+    //=========================================
+    // Header Start page
+    //=========================================
 
         /// <summary>
         /// Menu header

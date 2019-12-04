@@ -7,9 +7,7 @@ namespace CrazyEvents
         static void Main(string[] args)
         {
             var crazyEvents = new EventAgency();
-
             crazyEvents.Start();
-
             Console.ReadLine();
 
         }

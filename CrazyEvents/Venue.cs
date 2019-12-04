@@ -4,7 +4,7 @@ using System.Text;
 
 namespace CrazyEvents
 {
-    class Venue
+    public class Venue
     {
         public int Id { get; set; }
         public string Name { get; set; }
