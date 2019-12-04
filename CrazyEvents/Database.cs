@@ -7,7 +7,6 @@ namespace CrazyEvents
 {
     class Database
     {
-        // [IMPORTANT] Connection string: used to connect to the DB, make sure you replace "SunTrips" with your database name!!
         private readonly string connectionString = "Data Source=localhost;Initial Catalog=CrazyEvents;Integrated Security=True";
 
         /// <summary>
@@ -288,6 +287,63 @@ namespace CrazyEvents
             }
 
             return events; // Return all users
+        }
+
+
+        
+
+
+        //////////////////////
+        //Chat related////////
+        //////////////////////
+        //Add a message to the database
+        public void AddMessage(DateTime time, string username, string message)
+        {
+            //Put all the info together in one string
+            string messageToSend = time + ": " + username + ": " + message;
+            //Create the query that will be executed in the database
+            string sqlQuery = "INSERT INTO[Message] ([Message]) VALUES(@messageToSend)"; //query to save message to db
+
+            using (SqlConnection myConnection = new SqlConnection(connectionString)) // Prepare connection to the db
+            {
+                SqlCommand sqlCommand = new SqlCommand(sqlQuery, myConnection); // Prepare the query for the db
+
+                sqlCommand.Parameters.AddWithValue("@messageToSend", messageToSend); //Add message to the query
+
+                myConnection.Open(); // Open connection to the db
+
+                using (SqlDataReader dataReader = sqlCommand.ExecuteReader()) // Run query on db
+                {
+                    myConnection.Close(); // Close connection to the db
+                }
+            }
+        }
+
+        //Retrieve messages from the database to be displayed in chat
+        public List<string> GetAllMessages()
+        {
+            string sqlQuery = "SELECT * FROM [Message]";
+            //Create a list that will hold all messages on the database
+            List<string> messages = new List<string>();
+
+            using (SqlConnection myConnection = new SqlConnection(connectionString)) // Prepare connection to the db
+            {
+                SqlCommand sqlCommand = new SqlCommand(sqlQuery, myConnection);
+                myConnection.Open();        //Open connection to db
+
+                using (SqlDataReader dataReader = sqlCommand.ExecuteReader())
+                {
+                    while (dataReader.Read())       //As long as database is giving us info...
+                    {
+                        messages.Add(dataReader["Message"].ToString());     //...add to message list
+                    }
+
+                    myConnection.Close();       //Close connection to db
+                }
+
+            }
+
+            return messages;
         }
 
     }
