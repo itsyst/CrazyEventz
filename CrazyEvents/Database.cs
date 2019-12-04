@@ -287,8 +287,104 @@ namespace CrazyEvents
                 }
             }
 
-            return events; // Return all users
+            return events; // Return all events
         }
+
+        public List<Venue> GetAllVenues()
+        {
+            string sqlQuery = "SELECT * FROM [Venue]"; // Query to run against the DB
+
+            List<Venue> venues = new List<Venue>(); // Start with an ampty list of users
+
+            using (var myConnection = new SqlConnection(connectionString)) // Prepare connection to the db
+            {
+                SqlCommand sqlCommand = new SqlCommand(sqlQuery, myConnection); // Prepare the query for the db
+
+                myConnection.Open(); // Open connection to the db
+
+                using (SqlDataReader dataReader = sqlCommand.ExecuteReader()) // Run query on db
+                {
+                    while (dataReader.Read()) // Read response from db (all rows)
+                    {
+                        Venue venue = new Venue(); // create new User object
+
+                        venue.Id = int.Parse(dataReader["Id"].ToString()); // Set user Id from db
+                        venue.name = dataReader["Name"].ToString(); // Set user Username from db
+                        venue.Location = dataReader["Location"].ToString(); // Set user Password from db
+                        venue.MaxCapacity = int.Parse(dataReader["VenueSize"].ToString());
+                        venues.Add(venue); // Add last user to list of users
+                    }
+
+                    myConnection.Close(); // Close connection to the db
+                }
+            }
+
+            return venues; // Return all users
+        }
+
+        public void AddEvent(Event eventToStore)
+        {
+            string sqlQuery = $"INSERT INTO[Event] (Name, Description, Date, VenueId, Price) " +
+                $"VALUES ('{eventToStore.Name}', '{eventToStore.Description}', '{eventToStore.Date}', '{eventToStore.VenueID}','{eventToStore.EventPrice}')";
+            // Query to run against the DB
+            //INSERT INTO[User] (Name, Username, Password, Email, OrgNumber, RoleId) VALUES ('Leanne Graham', 'Leanne', 'Leanne123', 'Sincere@april.biz', '555666-0001', 1)
+
+            using (SqlConnection myConnection = new SqlConnection(connectionString)) // Prepare connection to the db
+            {
+                SqlCommand sqlCommand = new SqlCommand(sqlQuery, myConnection); // Prepare the query for the db
+
+
+                myConnection.Open(); // Open connection to the db
+
+                using (SqlDataReader dataReader = sqlCommand.ExecuteReader()) // Run query on db
+                {
+                    Console.WriteLine("Added new event to the database...");
+                    myConnection.Close(); // Close connection to the db
+                }
+            }
+        }
+        public void DeleteEvent(string eventToRemove)
+        {
+            string sqlQuery = $"DELETE FROM [Event] WHERE Name LIKE @eventname";
+            // Query to run against the DB
+            //INSERT INTO[User] (Name, Username, Password, Email, OrgNumber, RoleId) VALUES ('Leanne Graham', 'Leanne', 'Leanne123', 'Sincere@april.biz', '555666-0001', 1)
+
+            using (SqlConnection myConnection = new SqlConnection(connectionString)) // Prepare connection to the db
+            {
+                SqlCommand sqlCommand = new SqlCommand(sqlQuery, myConnection); // Prepare the query for the db
+
+                sqlCommand.Parameters.AddWithValue("@eventname", eventToRemove);
+                myConnection.Open(); // Open connection to the db
+
+                using (SqlDataReader dataReader = sqlCommand.ExecuteReader()) // Run query on db
+                {
+                    Console.WriteLine("Event succesfully removed...");
+                    myConnection.Close(); // Close connection to the db
+                }
+            }
+        }
+
+        public void DeleteUser(string userToRemove)
+        {
+            string sqlQuery = $"DELETE FROM [User] WHERE Username LIKE @username";
+            // Query to run against the DB
+            //INSERT INTO[User] (Name, Username, Password, Email, OrgNumber, RoleId) VALUES ('Leanne Graham', 'Leanne', 'Leanne123', 'Sincere@april.biz', '555666-0001', 1)
+
+            using (SqlConnection myConnection = new SqlConnection(connectionString)) // Prepare connection to the db
+            {
+                SqlCommand sqlCommand = new SqlCommand(sqlQuery, myConnection); // Prepare the query for the db
+
+                sqlCommand.Parameters.AddWithValue("@username", userToRemove);
+                myConnection.Open(); // Open connection to the db
+
+                using (SqlDataReader dataReader = sqlCommand.ExecuteReader()) // Run query on db
+                {
+                    Console.WriteLine("User succesfully removed...");
+                    myConnection.Close(); // Close connection to the db
+                }
+            }
+        }
+
 
     }
 }
