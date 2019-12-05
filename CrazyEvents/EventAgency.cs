@@ -83,21 +83,21 @@ namespace CrazyEvents
 
             if (dataBase.checkOrgNumber(orgNumber) == true)
             {
-                Console.WriteLine("Org number alreday registerd");
+                Console.WriteLine("Org number already registerd");
                 RegisterOrg();
             }
             else
             {
                 if (dataBase.checkEmail(org.Email) == true)
                 {
-                    Console.WriteLine("Email alreday registerd");
+                    Console.WriteLine("Email already registerd");
                     RegisterOrg();
                 }
                 else
                 {
                     if (dataBase.checkUsername(org.Username) == true)
                     {
-                        Console.WriteLine("Username alreday registerd");
+                        Console.WriteLine("Username already registerd");
                         RegisterOrg();
                     }
                     else
@@ -142,22 +142,29 @@ namespace CrazyEvents
             string inputPassword = Console.ReadLine();
 
             User temp = dataBase.GetUserByUsername(inputUsername);
-            if (temp.checkPassword(inputPassword) == true)
+            if (temp != null)
             {
-                Console.WriteLine("Password Correct");
-                loggedInUser = temp;
-                if (loggedInUser.role.Id == 1)
+                if (temp.checkPassword(inputPassword) == true)
                 {
-                    ShowAdminMenu();
+                    Console.WriteLine("Password Correct");
+                    loggedInUser = temp;
+                    if (loggedInUser.role.Id == 1)
+                    {
+                        ShowAdminMenu();
+                    }
+                    else
+                    {
+                        ShowVisitorMenu();
+                    }
                 }
                 else
                 {
-                    ShowVisitorMenu();
+                    Console.WriteLine("Wrong Password");
                 }
             }
             else
             {
-                Console.WriteLine("Wrong Password");
+                Console.WriteLine("Wrong Username!");
             }
 
         }
@@ -329,7 +336,7 @@ namespace CrazyEvents
             Console.Write("Add a description: ");
             var inputDescription = Console.ReadLine();
             eventss.Description = inputDescription;
-            Console.Write("Add the event date opening: yyyy-mm-dd ");
+            Console.Write("Add the event date opening: yyyy-mm-dd \n");
             var inputOpening = Console.ReadLine();
             eventss.Date = inputOpening;
             Console.WriteLine("Where does this event take place?");

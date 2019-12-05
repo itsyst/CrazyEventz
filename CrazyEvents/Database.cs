@@ -103,14 +103,14 @@ namespace CrazyEvents
                     {
                         user = new User(); // create new User object
                         user.OrgNumber = dataReader["OrgNumber"].ToString(); // Set user Password from db
-                        Console.WriteLine("IT EXISTS");
+                        //Console.WriteLine("IT EXISTS");
                         return true;
                     }
 
                     myConnection.Close(); // Close connection to the db
                 }
             }
-            Console.WriteLine("IT DOES NOT EXIST");
+            //Console.WriteLine("IT DOES NOT EXIST");
             return false; // Return the user
         }
         public bool checkEmail(string emailToCheck)
@@ -133,14 +133,14 @@ namespace CrazyEvents
                     {
                         user = new User(); // create new User object
                         user.Email = dataReader["Email"].ToString(); // Set user Password from db
-                        Console.WriteLine("IT EXISTS");
+                        //Console.WriteLine("IT EXISTS");
                         return true;
                     }
 
                     myConnection.Close(); // Close connection to the db
                 }
             }
-            Console.WriteLine("IT DOES NOT EXIST");
+            //Console.WriteLine("IT DOES NOT EXIST");
             return false; // Return the user
         }
         public bool checkUsername(string usernameToCheck)
@@ -163,14 +163,14 @@ namespace CrazyEvents
                     {
                         user = new User(); // create new User object
                         user.Username = dataReader["Username"].ToString(); // Set user Password from db
-                        Console.WriteLine("IT EXISTS");
+                        //Console.WriteLine("IT EXISTS");
                         return true;
                     }
 
                     myConnection.Close(); // Close connection to the db
                 }
             }
-            Console.WriteLine("IT DOES NOT EXIST");
+            //Console.WriteLine("IT DOES NOT EXIST");
             return false; // Return the user
         }
         public void addUser(User user)
