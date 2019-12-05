@@ -132,7 +132,8 @@ namespace CrazyEvents
             // We still need to built a control here...to check if username and so on already exists
             user.role.Id = 4;
             dataBase.addUser(user);
-            loggedInUser = user;
+            loggedInUser = dataBase.GetUserByUsername(user.Username);
+
             ShowVisitorMenu();
         }
         private void Login()
@@ -282,6 +283,9 @@ namespace CrazyEvents
             Console.Clear();
             Console.WriteLine("---Here are all the upcoming Events---");
             List<Event> events = dataBase.GetAllEvents();
+            List<Venue> venues = dataBase.GetAllVenues();
+            int ticketsLeft;
+
             for (int i = 0; i < events.Count; i++)
             {
                 Console.WriteLine($"\nEvent {i + 1}");
@@ -289,7 +293,21 @@ namespace CrazyEvents
                 Console.Write($"\nEvent ID: {events[i].ID}");
                 Console.Write($"\nDescription: {events[i].Description}");
                 Console.Write($"\nDate: {events[i].Date}");
-                Console.Write($"\nPrice: {events[i].EventPrice}\n");
+                Console.Write($"\nPrice: {events[i].EventPrice}");
+                for (int y = 0; y < venues.Count; y++)
+                {
+                    if (venues[y].Id == events[i].VenueID)
+                    {
+                        Console.Write($"\nLocation: {venues[y].Location}");
+                        Console.Write($"\nMax capacity: {venues[y].MaxCapacity}");
+                        List<Ticket> tickets = dataBase.GetTicketsByEventID(events[i].ID);
+                        ticketsLeft = venues[y].MaxCapacity - tickets.Count;
+                        Console.Write($"\nTickets left: {ticketsLeft}\n");
+                    }
+                }
+               
+
+
             }
             if (loggedInUser.role.Id == 4)
             {
@@ -302,6 +320,7 @@ namespace CrazyEvents
                         Console.WriteLine("Enter the number of the event:");
                         string input = Console.ReadLine();
                         int eventNumber = int.Parse(input);
+ 
 
                         Ticket ticket = new Ticket();
                         ticket.Price = 0; // We don't use it, since we have Price as property of Event now.. so we still need to do a clean up later, get rid of this property everywhere...
@@ -354,11 +373,11 @@ namespace CrazyEvents
             bool isRunning = true;
             while (isRunning)
             {
-                Console.WriteLine("---Handle-Events");
+                Console.WriteLine("---Handle-Events---");
                 Console.WriteLine("1. Create event");
                 Console.WriteLine("2. Delete event");
                 Console.WriteLine("3. Return to previous menu");
-                Console.WriteLine("\nMake your choice...");
+                Console.WriteLine("Make a selection... ");
                 int choice = int.Parse(Console.ReadLine());
                 switch (choice)
                 {
@@ -380,52 +399,136 @@ namespace CrazyEvents
         {
 
             var eventss = new Event();
-
+            bool colorRow = true; 
             eventss.ID = 0;
-
-            Console.Write("Type the name of the event you want to create: ");
+            Console.Clear();
+            Console.WriteLine("---Create-Event---");
+            Console.Write(" Type the name of the event you want to create: ");
             string inputEvName = Console.ReadLine();
             eventss.Name = inputEvName;
-            Console.Write("Add a description: ");
+            Console.Write(" Add a description: ");
             var inputDescription = Console.ReadLine();
             eventss.Description = inputDescription;
-            Console.Write("Add the event date opening: yyyy-mm-dd \n");
+            Console.Write(" Add the event date opening: yyyy-mm-dd: ");
             var inputOpening = Console.ReadLine();
             eventss.Date = inputOpening;
-            Console.WriteLine("Where does this event take place?");
+            Console.WriteLine(" Where does this event take place?");
 
             List<Venue> venues = dataBase.GetAllVenues();
-            Console.WriteLine("Here's a list of venues to choose from...: ");
+            Console.WriteLine(" Here's a list of venues to choose from: \n");
+            
             for (int i = 0; i < venues.Count; i++)
             {
-                Console.Write($"Venue ID: {venues[i].Id} ");
-                Console.Write($"Venue Name: {venues[i].name} ");
-                Console.Write($"Venue Location: {venues[i].Location} ");
-                Console.Write($"Venue Capacity: {venues[i].MaxCapacity}\n");
+                int nameLength = venues[i].name.Length;
+                int rest = 20 - nameLength;
+                for (int y = 0; y < rest; y++)
+                {
+                    venues[i].name += " ";
+                }
+                nameLength = venues[i].Location.Length;
+                rest = 20 - nameLength;
+                for (int y = 0; y < rest; y++)
+                {
+                    venues[i].Location += " ";
+                }
+                if (colorRow == false)
+                {
+                    Console.ForegroundColor = ConsoleColor.DarkGray;
+                    colorRow = true;
+                }
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.White;
+                    colorRow = false;
+                }
+
+                Console.Write($"| ID: {venues[i].Id} | ");
+                Console.Write($"| Name: {venues[i].name} |");
+                Console.Write($"| Location: {venues[i].Location} |");
+                Console.Write($"| Capacity: {venues[i].MaxCapacity}|\n");
+                
+                Console.ResetColor();
             }
-            Console.Write("Enter the ID of the venue you want to hold your event: ");
+            
+            Console.Write("\n Enter the ID of the venue you want to hold your event: ");
             string input = Console.ReadLine();
             eventss.VenueID = int.Parse(input);
-            Console.Write("What will a ticket for this event cost?");
+            Console.Write(" What will a ticket for this event cost? ");
             input = Console.ReadLine();
             eventss.EventPrice = int.Parse(input);
             dataBase.AddEvent(eventss);
+            Console.Clear();
             Console.WriteLine("\nThank you for adding your event...");
 
 
         }
         private void DeleteEvent()
         {
-            
-            Console.WriteLine("What is the name of the event you want to delete");
+            bool colorRow = true;
+            List<Event> venues = dataBase.GetAllEvents();
+            Console.WriteLine(" Here's a list of Events to choose from: \n");
+            Console.WriteLine("---------------------------------------------");
+            for (int i = 0; i < venues.Count; i++)
+            {
+                int nameLength = venues[i].Name.Length;
+                int rest = 25 - nameLength;
+                for (int y = 0; y < rest; y++)
+                {
+                    venues[i].Name += " ";
+                }
+
+                string id = venues[i].ID.ToString();
+                rest = 3 - id.Length;
+               
+                for (int y = 0; y < rest; y++)
+                {
+                    
+                    id += " ";
+                }
+
+               
+
+                if (colorRow == false)
+                {
+                    Console.ForegroundColor = ConsoleColor.DarkGray;
+                    colorRow = true;
+                }
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.White;
+                    colorRow = false;
+                }
+
+                Console.Write($"| ID: {id} | ");
+                Console.Write($"| Name: {venues[i].Name} |\n");
+               
+
+                Console.ResetColor();
+            }
+            Console.WriteLine("---------------------------------------------");
+            Console.Write("What is the ID of the event you want to delete: ");
             // This code could be better....more user friendly
-            Console.WriteLine("...If you forgot enter -1 and then choose previous menu - check Show All Events first.");
-            
+            //Console.WriteLine("...If you forgot enter -1 and then choose previous menu - check Show All Events first.");
+
+
+            List<Event> events = dataBase.GetAllEvents();
+            Event deleteThis = new Event();
             string eventToDelete = Console.ReadLine();
+
+            for (int i = 0; i < events.Count; i++)
+            {
+               
+                
+                if (events[i].ID == int.Parse(eventToDelete))
+                {
+                    deleteThis = events[i];
+                }
+            }
             if(eventToDelete == "-1")
             {
                 return;
             }
+            /*
             Console.WriteLine("What is the ID of the event you want to delete");
             Console.WriteLine("...If you forgot enter -1 and then choose previous menu - check Show All Events first.");
     
@@ -433,10 +536,10 @@ namespace CrazyEvents
             if (idEventToDelete == -1)
             {
                 return;
-            }
-            dataBase.RemoveMessages(idEventToDelete);
-            dataBase.RemoveTickets(idEventToDelete);
-            dataBase.DeleteEvent(eventToDelete);
+            }*/
+            dataBase.RemoveMessages(deleteThis.ID);
+            dataBase.RemoveTickets(deleteThis.ID);
+            dataBase.DeleteEvent(deleteThis.Name);
         }
         private void HandleUsers()
         {
@@ -498,6 +601,7 @@ namespace CrazyEvents
             dataBase.DeleteUser(userToDelete);
 
         }
+
     }
 }
 
