@@ -75,6 +75,9 @@ namespace CrazyEvents
                         user.Username = dataReader["Username"].ToString(); // Set user Username from db
                         user.Password = dataReader["Password"].ToString(); // Set user Password from db
                         user.role.Id = int.Parse(dataReader["RoleId"].ToString()); //Set user role from db
+                        user.Email = dataReader["Email"].ToString();
+                        user.OrgNumber = dataReader["OrgNumber"].ToString();
+                        user.Name = dataReader["Name"].ToString();
                     }
 
                     myConnection.Close(); // Close connection to the db

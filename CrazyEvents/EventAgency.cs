@@ -170,7 +170,6 @@ namespace CrazyEvents
             }
 
         }
-
         private void ShowAdminMenu()
         {
             while (loggedInUser != null)
@@ -185,7 +184,8 @@ namespace CrazyEvents
                 Console.WriteLine("1. Show all events");
                 Console.WriteLine("2. Handle events");
                 Console.WriteLine("3. Handle users");
-                Console.WriteLine("4. Log out");
+                Console.WriteLine("4. Show Profle");
+                Console.WriteLine("5. Log out");
                 string input = Console.ReadLine();
 
                 switch (input)
@@ -204,6 +204,10 @@ namespace CrazyEvents
                         break;
                     case "4":
                         Console.Clear();
+                        ShowProfile();
+                        break;
+                    case "5":
+                        Console.Clear();
                         loggedInUser = null;
                         break;
                 }
@@ -218,7 +222,8 @@ namespace CrazyEvents
                 Console.WriteLine("----Visitor-Menu----");
                 Console.WriteLine("1. Show all events (and buy tickets...)");
                 Console.WriteLine("2. Show your purchased tickets");
-                Console.WriteLine("3. Logout");
+                Console.WriteLine("3. Show your Profile");
+                Console.WriteLine("4. Logout");
                 string input = Console.ReadLine();
 
                 switch (input)
@@ -233,11 +238,43 @@ namespace CrazyEvents
                         break;
                     case "3":
                         Console.Clear();
+                        ShowProfile();
+                        break;
+                    case "4":
+                        Console.Clear();
                         loggedInUser = null;
                         break;
                 }
 
             }
+        }
+        private void ShowProfile()
+        {
+            User user = dataBase.GetUserByUsername(loggedInUser.Username);
+            List<Ticket> userTickets = dataBase.GetTicketsByUserID(user.Id.ToString());
+            Console.Clear();
+            string nameState = "Name";
+            string ssnState = "SSN";
+            if (user.role.Id == 1)
+            {
+                nameState = "Company name";
+                ssnState = "Organisation number";
+            }
+
+            
+            Console.WriteLine("---Profile---");
+            Console.WriteLine($"{nameState}: {user.Name} ");
+            Console.WriteLine($"Username: {user.Username} ");
+            Console.WriteLine($"Email: {user.Email} ");
+            Console.WriteLine($"{ssnState}: {user.OrgNumber} ");
+            if(user.role.Id != 1)
+            {
+                Console.WriteLine($"Tickets: {userTickets.Count} ");
+            }
+            
+            Console.WriteLine("Press enter to go back");
+            Console.ReadLine();
+
         }
         private void ShowEvents()
         {
@@ -377,8 +414,6 @@ namespace CrazyEvents
 
 
         }
-
-
         private void DeleteEvent()
         {
             
@@ -403,7 +438,6 @@ namespace CrazyEvents
             dataBase.RemoveTickets(idEventToDelete);
             dataBase.DeleteEvent(eventToDelete);
         }
-
         private void HandleUsers()
         {
 
@@ -457,7 +491,6 @@ namespace CrazyEvents
                 Console.WriteLine("----------------");
             }
         }
-
         private void DeleteUser()
         {
             Console.Write("Enter the username of the user you want to remove:");
