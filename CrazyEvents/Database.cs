@@ -35,7 +35,7 @@ namespace CrazyEvents
                         user.Id = int.Parse(dataReader["Id"].ToString()); // Set user Id from db
                         user.Username = dataReader["Username"].ToString(); // Set user Username from db
                         user.Password = dataReader["Password"].ToString(); // Set user Password from db
-
+                        user.role.Id = int.Parse(dataReader["RoleId"].ToString());
                         users.Add(user); // Add last user to list of users
                     }
 
@@ -103,14 +103,14 @@ namespace CrazyEvents
                     {
                         user = new User(); // create new User object
                         user.OrgNumber = dataReader["OrgNumber"].ToString(); // Set user Password from db
-                        Console.WriteLine("IT EXISTS");
+                        //Console.WriteLine("IT EXISTS");
                         return true;
                     }
 
                     myConnection.Close(); // Close connection to the db
                 }
             }
-            Console.WriteLine("IT DOES NOT EXIST");
+            //Console.WriteLine("IT DOES NOT EXIST");
             return false; // Return the user
         }
         public bool checkEmail(string emailToCheck)
@@ -133,14 +133,14 @@ namespace CrazyEvents
                     {
                         user = new User(); // create new User object
                         user.Email = dataReader["Email"].ToString(); // Set user Password from db
-                        Console.WriteLine("IT EXISTS");
+                        //Console.WriteLine("IT EXISTS");
                         return true;
                     }
 
                     myConnection.Close(); // Close connection to the db
                 }
             }
-            Console.WriteLine("IT DOES NOT EXIST");
+            //Console.WriteLine("IT DOES NOT EXIST");
             return false; // Return the user
         }
         public bool checkUsername(string usernameToCheck)
@@ -163,14 +163,14 @@ namespace CrazyEvents
                     {
                         user = new User(); // create new User object
                         user.Username = dataReader["Username"].ToString(); // Set user Password from db
-                        Console.WriteLine("IT EXISTS");
+                        //Console.WriteLine("IT EXISTS");
                         return true;
                     }
 
                     myConnection.Close(); // Close connection to the db
                 }
             }
-            Console.WriteLine("IT DOES NOT EXIST");
+            //Console.WriteLine("IT DOES NOT EXIST");
             return false; // Return the user
         }
         public void addUser(User user)
@@ -254,7 +254,43 @@ namespace CrazyEvents
             return tickets; // Return all tickets 
         }
 
+        
+        public List<Ticket> GetTicketsByEventID(int eventID)
+        {
+            string sqlQuery = "SELECT * FROM [Ticket] WHERE [EventID]=@eventid"; // Query to run against the DB
 
+            List<Ticket> tickets = new List<Ticket>(); // Start with an ampty list of users
+
+            using (var myConnection = new SqlConnection(connectionString)) // Prepare connection to the db
+            {
+                SqlCommand sqlCommand = new SqlCommand(sqlQuery, myConnection); // Prepare the query for the db
+
+                sqlCommand.Parameters.AddWithValue("@eventid", eventID);
+
+                myConnection.Open(); // Open connection to the db
+
+                using (SqlDataReader dataReader = sqlCommand.ExecuteReader()) // Run query on db
+                {
+                    while (dataReader.Read()) // Read response from db (all rows)
+                    {
+                        Ticket ticket = new Ticket(); // create new ticket object
+
+                        ticket.Id = int.Parse(dataReader["Id"].ToString()); // Set ticket Id from db
+                        //ticket.Price = int.Parse(dataReader["Price"].ToString()); // Set ticket price from db, commented it out, this is throwing expection, not solved yet
+                        ticket.UserID = int.Parse(dataReader["UserId"].ToString()); // Set user id  from db
+                        ticket.EventID = int.Parse(dataReader["EventId"].ToString());// Set event ID from db
+
+                        tickets.Add(ticket); // Add last ticket to list of tickets
+                    }
+
+                    myConnection.Close(); // Close connection to the db
+                }
+
+
+            }
+
+            return tickets; // Return all tickets 
+        }
         public List<Event> GetAllEvents()
         {
             string sqlQuery = "SELECT * FROM [Event]"; // Query to run against the DB
@@ -287,7 +323,143 @@ namespace CrazyEvents
                 }
             }
 
-            return events; // Return all users
+            return events; // Return all events
+        }
+
+
+        public List<Venue> GetAllVenues()
+        {
+            string sqlQuery = "SELECT * FROM [Venue]"; // Query to run against the DB
+
+            List<Venue> venues = new List<Venue>(); // Start with an ampty list of users
+
+            using (var myConnection = new SqlConnection(connectionString)) // Prepare connection to the db
+            {
+                SqlCommand sqlCommand = new SqlCommand(sqlQuery, myConnection); // Prepare the query for the db
+
+                myConnection.Open(); // Open connection to the db
+
+                using (SqlDataReader dataReader = sqlCommand.ExecuteReader()) // Run query on db
+                {
+                    while (dataReader.Read()) // Read response from db (all rows)
+                    {
+                        Venue venue = new Venue(); // create new User object
+
+                        venue.Id = int.Parse(dataReader["Id"].ToString()); // Set user Id from db
+                        venue.name = dataReader["Name"].ToString(); // Set user Username from db
+                        venue.Location = dataReader["Location"].ToString(); // Set user Password from db
+                        venue.MaxCapacity = int.Parse(dataReader["VenueSize"].ToString());
+                        venues.Add(venue); // Add last user to list of users
+                    }
+
+                    myConnection.Close(); // Close connection to the db
+                }
+            }
+
+            return venues; // Return all users
+        }
+
+        public void AddEvent(Event eventToStore)
+        {
+            string sqlQuery = $"INSERT INTO[Event] (Name, Description, Date, VenueId, Price) " +
+                $"VALUES ('{eventToStore.Name}', '{eventToStore.Description}', '{eventToStore.Date}', '{eventToStore.VenueID}','{eventToStore.EventPrice}')";
+            // Query to run against the DB
+            //INSERT INTO[User] (Name, Username, Password, Email, OrgNumber, RoleId) VALUES ('Leanne Graham', 'Leanne', 'Leanne123', 'Sincere@april.biz', '555666-0001', 1)
+
+            using (SqlConnection myConnection = new SqlConnection(connectionString)) // Prepare connection to the db
+            {
+                SqlCommand sqlCommand = new SqlCommand(sqlQuery, myConnection); // Prepare the query for the db
+
+
+                myConnection.Open(); // Open connection to the db
+
+                using (SqlDataReader dataReader = sqlCommand.ExecuteReader()) // Run query on db
+                {
+                    Console.WriteLine("Added new event to the database...");
+                    myConnection.Close(); // Close connection to the db
+                }
+            }
+        }
+        public void DeleteEvent(string eventToRemove)
+        {
+            string sqlQuery = $"DELETE FROM [Event] WHERE Name LIKE @eventname";
+            // Query to run against the DB
+            //INSERT INTO[User] (Name, Username, Password, Email, OrgNumber, RoleId) VALUES ('Leanne Graham', 'Leanne', 'Leanne123', 'Sincere@april.biz', '555666-0001', 1)
+
+            using (SqlConnection myConnection = new SqlConnection(connectionString)) // Prepare connection to the db
+            {
+                SqlCommand sqlCommand = new SqlCommand(sqlQuery, myConnection); // Prepare the query for the db
+
+                sqlCommand.Parameters.AddWithValue("@eventname", eventToRemove);
+                myConnection.Open(); // Open connection to the db
+
+                using (SqlDataReader dataReader = sqlCommand.ExecuteReader()) // Run query on db
+                {
+                    Console.WriteLine("Event succesfully removed...");
+                    myConnection.Close(); // Close connection to the db
+                }
+            }
+        }
+
+        public void DeleteUser(string userToRemove)
+        {
+            string sqlQuery = $"DELETE FROM [User] WHERE Username LIKE @username";
+            // Query to run against the DB
+            //INSERT INTO[User] (Name, Username, Password, Email, OrgNumber, RoleId) VALUES ('Leanne Graham', 'Leanne', 'Leanne123', 'Sincere@april.biz', '555666-0001', 1)
+
+            using (SqlConnection myConnection = new SqlConnection(connectionString)) // Prepare connection to the db
+            {
+                SqlCommand sqlCommand = new SqlCommand(sqlQuery, myConnection); // Prepare the query for the db
+
+                sqlCommand.Parameters.AddWithValue("@username", userToRemove);
+                myConnection.Open(); // Open connection to the db
+
+                using (SqlDataReader dataReader = sqlCommand.ExecuteReader()) // Run query on db
+                {
+                    Console.WriteLine("User succesfully removed...");
+                    myConnection.Close(); // Close connection to the db
+                }
+            }
+        }
+
+        public void RemoveTickets(int eventID)
+        {
+            string sqlQuery = $"DELETE FROM [Ticket] WHERE EventId=@eventid";
+            // Query to run against the DB
+            //INSERT INTO[User] (Name, Username, Password, Email, OrgNumber, RoleId) VALUES ('Leanne Graham', 'Leanne', 'Leanne123', 'Sincere@april.biz', '555666-0001', 1)
+
+            using (SqlConnection myConnection = new SqlConnection(connectionString)) // Prepare connection to the db
+            {
+                SqlCommand sqlCommand = new SqlCommand(sqlQuery, myConnection); // Prepare the query for the db
+
+                sqlCommand.Parameters.AddWithValue("@eventid", eventID);
+                myConnection.Open(); // Open connection to the db
+
+                using (SqlDataReader dataReader = sqlCommand.ExecuteReader()) // Run query on db
+                {
+                    myConnection.Close(); // Close connection to the db
+                }
+            }
+        }
+
+        public void RemoveMessages(int eventID)
+        {
+            string sqlQuery = $"DELETE FROM [Message] WHERE EventId=@eventID";
+            // Query to run against the DB
+            //INSERT INTO[User] (Name, Username, Password, Email, OrgNumber, RoleId) VALUES ('Leanne Graham', 'Leanne', 'Leanne123', 'Sincere@april.biz', '555666-0001', 1)
+
+            using (SqlConnection myConnection = new SqlConnection(connectionString)) // Prepare connection to the db
+            {
+                SqlCommand sqlCommand = new SqlCommand(sqlQuery, myConnection); // Prepare the query for the db
+
+                sqlCommand.Parameters.AddWithValue("@eventID", eventID);
+                myConnection.Open(); // Open connection to the db
+
+                using (SqlDataReader dataReader = sqlCommand.ExecuteReader()) // Run query on db
+                {
+                    myConnection.Close(); // Close connection to the db
+                }
+            }
         }
 
     }
