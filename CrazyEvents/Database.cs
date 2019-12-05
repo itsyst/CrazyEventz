@@ -35,7 +35,7 @@ namespace CrazyEvents
                         user.Id = int.Parse(dataReader["Id"].ToString()); // Set user Id from db
                         user.Username = dataReader["Username"].ToString(); // Set user Username from db
                         user.Password = dataReader["Password"].ToString(); // Set user Password from db
-
+                        user.role.Id = int.Parse(dataReader["RoleId"].ToString());
                         users.Add(user); // Add last user to list of users
                     }
 

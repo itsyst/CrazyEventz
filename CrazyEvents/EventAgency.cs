@@ -71,6 +71,8 @@ namespace CrazyEvents
         {
             User org = new User();
 
+            Console.Write("Company name: ");
+            org.Name = Console.ReadLine();
             Console.Write("Username: ");
             org.Username = Console.ReadLine();
             Console.Write("Password: ");
@@ -173,6 +175,11 @@ namespace CrazyEvents
         {
             while (loggedInUser != null)
             {
+                Console.Clear();
+                loggedInUser = dataBase.GetUserByUsername(loggedInUser.Username);
+                if (loggedInUser == null)
+                    break;
+
                 Console.WriteLine($"Logged in as: {loggedInUser.Username}");
                 Console.WriteLine("----Admin-Menu----");
                 Console.WriteLine("1. Show all events");
@@ -184,15 +191,19 @@ namespace CrazyEvents
                 switch (input)
                 {
                     case "1":
+                        Console.Clear();
                         ShowEvents();
                         break;
                     case "2":
+                        Console.Clear();
                         HandleEvents();
                         break;
                     case "3":
+                        Console.Clear();
                         HandleUsers();
                         break;
                     case "4":
+                        Console.Clear();
                         loggedInUser = null;
                         break;
                 }
@@ -202,6 +213,7 @@ namespace CrazyEvents
         {
             while (loggedInUser != null)
             {
+                Console.Clear();
                 Console.WriteLine($"Logged in as: {loggedInUser.Username}");
                 Console.WriteLine("----Visitor-Menu----");
                 Console.WriteLine("1. Show all events (and buy tickets...)");
@@ -212,12 +224,15 @@ namespace CrazyEvents
                 switch (input)
                 {
                     case "1":
+                        Console.Clear();
                         ShowEvents();
                         break;
                     case "2":
+                        Console.Clear();
                         ShowTickets();
                         break;
                     case "3":
+                        Console.Clear();
                         loggedInUser = null;
                         break;
                 }
@@ -266,9 +281,9 @@ namespace CrazyEvents
                     Console.WriteLine("Do you want to purchase another one? y/n");
                 }
             }
-            Console.WriteLine("\n\nPress enter to return to the Visitor menu");
+            Console.WriteLine("\n\nPress enter to return to the previous menu");
             Console.ReadLine();
-            Console.Clear();
+            
 
         }
         private void ShowTickets()
@@ -317,6 +332,7 @@ namespace CrazyEvents
                         DeleteEvent();
                         break;
                     case 3:
+                        Console.Clear();
                         isRunning = false;
                         break;
 
@@ -330,7 +346,7 @@ namespace CrazyEvents
 
             eventss.ID = 0;
 
-            Console.Write("Type events name: ");
+            Console.Write("Type the name of the event you want to create: ");
             string inputEvName = Console.ReadLine();
             eventss.Name = inputEvName;
             Console.Write("Add a description: ");
@@ -402,14 +418,17 @@ namespace CrazyEvents
                 int selection = int.Parse(Console.ReadLine());
                 if (selection == 1)
                 {
+                    
                     ShowAllUsers();
                 }
                 else if (selection == 2)
                 {
+                    
                     DeleteUser();
                 }
                 else if (selection == 3)
                 {
+                    Console.Clear();
                     break;
                 }
                 else
@@ -427,6 +446,15 @@ namespace CrazyEvents
             {
                 Console.Write($"Username: {users[i].Username}\n");
                 Console.Write($"User ID: {users[i].Id}\n");
+                if (users[i].role.Id == 1)
+                {
+                    Console.Write($"Role: Admin\n");
+                }
+                else
+                {
+                    Console.Write($"Role: Visitor\n");
+                }
+                Console.WriteLine("----------------");
             }
         }
 
