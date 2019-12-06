@@ -311,7 +311,7 @@ namespace CrazyEvents
             }
             if (loggedInUser.role.Id == 4)
             {
-                Console.WriteLine("\nDo you want to buy a ticket to one of these events? y/n");
+                Console.WriteLine("\nDo you want to buy a ticket or show chat to one of these events? y/n");
                 while (true)
                 {
                     string answer = Console.ReadLine();
@@ -320,15 +320,26 @@ namespace CrazyEvents
                         Console.WriteLine("Enter the number of the event:");
                         string input = Console.ReadLine();
                         int eventNumber = int.Parse(input);
- 
 
-                        Ticket ticket = new Ticket();
-                        ticket.Price = 0; // We don't use it, since we have Price as property of Event now.. so we still need to do a clean up later, get rid of this property everywhere...
-                        ticket.UserID = loggedInUser.Id;
-                        ticket.EventID = events[eventNumber - 1].ID;
+                        Console.WriteLine("Buy ticket(1) or show chat(2)?");
+                        input = Console.ReadLine();
+                        if (input == "1")
+                        {
+                            Ticket ticket = new Ticket();
+                            ticket.Price = 0; // We don't use it, since we have Price as property of Event now.. so we still need to do a clean up later, get rid of this property everywhere...
+                            ticket.UserID = loggedInUser.Id;
+                            ticket.EventID = events[eventNumber - 1].ID;
 
-                        dataBase.addTicket(ticket);
-                        Console.WriteLine("Purchase confirmed");
+                            dataBase.addTicket(ticket);
+                            Console.WriteLine("Purchase confirmed");
+
+                        }
+                        else
+                        {
+                            events[eventNumber - 1].chat.ShowChat(loggedInUser.Username, events[eventNumber - 1].ID);
+                        }
+
+                        
                     }
                     else
                     {

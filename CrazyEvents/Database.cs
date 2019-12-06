@@ -465,19 +465,22 @@ namespace CrazyEvents
             }
         }
 
-        public void AddMessage(DateTime time, string username, string message)
+        public void AddMessage(DateTime time, string username, string message, int eventID)
         {
             //Put all the info together in one string
             string messageToSend = time + ": " + username + ": " + message;
             //Create the query that will be executed in the database
-            string sqlQuery = "INSERT INTO[Message] ([Message]) VALUES(@messageToSend)"; //query to save message to db
+            string sqlQuery = "INSERT INTO[Message] ([Message], [UserId], [EventId]) VALUES(@messageToSend, @userid, @eventid)"; //query to save message to db
+
+            User user = GetUserByUsername(username);
 
             using (SqlConnection myConnection = new SqlConnection(connectionString)) // Prepare connection to the db
             {
                 SqlCommand sqlCommand = new SqlCommand(sqlQuery, myConnection); // Prepare the query for the db
 
                 sqlCommand.Parameters.AddWithValue("@messageToSend", messageToSend); //Add message to the query
-
+                sqlCommand.Parameters.AddWithValue("@userid", user.Id);
+                sqlCommand.Parameters.AddWithValue("@eventid", eventID);
                 myConnection.Open(); // Open connection to the db
 
                 using (SqlDataReader dataReader = sqlCommand.ExecuteReader()) // Run query on db
@@ -488,22 +491,23 @@ namespace CrazyEvents
         }
 
         //Retrieve messages from the database to be displayed in chat
-        public List<string> GetAllMessages()
+        public List<string> GetAllMessages(int eventID)
         {
-            string sqlQuery = "SELECT * FROM [Message]";
+            string sqlQuery = "SELECT * FROM [Message] WHERE [EventId] = @eventID";
             //Create a list that will hold all messages on the database
             List<string> messages = new List<string>();
 
             using (SqlConnection myConnection = new SqlConnection(connectionString)) // Prepare connection to the db
             {
                 SqlCommand sqlCommand = new SqlCommand(sqlQuery, myConnection);
+                sqlCommand.Parameters.AddWithValue("@eventID", eventID);
                 myConnection.Open();        //Open connection to db
 
                 using (SqlDataReader dataReader = sqlCommand.ExecuteReader())
                 {
                     while (dataReader.Read())       //As long as database is giving us info...
                     {
-                        messages.Add(dataReader["Message"].ToString());     //...add to message list
+                        messages.Add(dataReader["Message"].ToString()); //...add to message list
                     }
 
                     myConnection.Close();       //Close connection to db

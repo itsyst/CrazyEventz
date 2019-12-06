@@ -12,7 +12,8 @@ namespace CrazyEvents
         public string Date;
         public int VenueID;
         public int EventPrice; // Added an extra property
-        
+
+        public Chat chat = new Chat();
 
     }
 }

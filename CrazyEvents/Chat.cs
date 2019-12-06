@@ -6,15 +6,15 @@ namespace CrazyEvents
 {
     class Chat
     {
-        /*
-        public void ShowChat()
+        Database dataBase = new Database();
+        public void ShowChat(string name, int eventID)
         {
             string message;
-            string currentUser = loggedInUser.Name;
+            string currentUser = name;
             DateTime time;
 
             //Load all messages from database into chat
-            GetAllMessages();
+            GetAllMessages(eventID);
 
             //While user is in the chat
             while (true)
@@ -30,37 +30,60 @@ namespace CrazyEvents
                 }
                 else if (message.ToLower() == "reload")
                 {
-                    GetAllMessages();
+                    GetAllMessages(eventID);
                 }
                 else
                 {
                     time = DateTime.Now;
-                    AddMessage(time, currentUser, message);
-                    GetAllMessages();
+                    AddMessage(time, currentUser, message, eventID);
+                    GetAllMessages(eventID);
                 }
             }
 
         }
 
-        private void AddMessage(DateTime time, string currentUser, string message)
+        private void AddMessage(DateTime time, string currentUser, string message, int eventID)
         {
-            dataBase.AddMessage(time, currentUser, message);
+            dataBase.AddMessage(time, currentUser, message, eventID);
         }
 
         //Load all messages/chat 
-        private void GetAllMessages()
+        private void GetAllMessages(int eventID)
         {
             Console.Clear();
 
             //Create list with all messages
-            List<string> messages = dataBase.GetAllMessages();
+            List<string> messages = dataBase.GetAllMessages(eventID);
 
             //Write every message in console
+            Console.WriteLine("---------------------------");
             foreach (string x in messages)
             {
-                Console.WriteLine(x);
+                string message = x;
+                string messageToSend = ""; 
+                string [] messageSplited = message.Split(" ");
+                messageToSend += "| ";
+                for (int y = 0; y < messageSplited.Length; y++)
+                {
+                    messageToSend += messageSplited[y];
+                    messageToSend += " ";
+                    if (y == 5)
+                        messageToSend += " |\n|";
+                   
+                    
+                }
+                if( messageToSend[messageToSend.Length - 1].Equals("|") == true)
+                {
+
+                }
+                else
+                {
+                    messageToSend += "|";
+                }
+                Console.WriteLine($"{messageToSend}");
             }
+            Console.WriteLine("---------------------------");
         }
-        */
+        
     }
 }
