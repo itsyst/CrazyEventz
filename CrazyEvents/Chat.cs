@@ -6,12 +6,10 @@ namespace CrazyEvents
 {
     class Chat
     {
-        Database dataBase = new Database();
+        readonly Database dataBase = new Database();
         public void ShowChat(string name, int eventID)
         {
-            string message;
-            string currentUser = name;
-            DateTime time;
+            var currentUser = name;
 
             //Load all messages from database into chat
             GetAllMessages(eventID);
@@ -22,19 +20,19 @@ namespace CrazyEvents
                 Console.WriteLine("Write 'exit' to exit chat");
                 Console.WriteLine("Write 'reload' to load new messages");
                 Console.Write("Message: ");
-                message = Console.ReadLine();
-                if (message.ToLower() == "exit")
+                var message = Console.ReadLine();
+                if (message != null && message.ToLower() == "exit")
                 {
                     Console.Clear();
                     break;
                 }
-                else if (message.ToLower() == "reload")
+                else if (message != null && message.ToLower() == "reload")
                 {
                     GetAllMessages(eventID);
                 }
                 else
                 {
-                    time = DateTime.Now;
+                    var time = DateTime.Now;
                     AddMessage(time, currentUser, message, eventID);
                     GetAllMessages(eventID);
                 }
@@ -57,22 +55,20 @@ namespace CrazyEvents
 
             //Write every message in console
             Console.WriteLine("---------------------------");
-            foreach (string x in messages)
+            foreach (var x in messages)
             {
-                string message = x;
-                string messageToSend = ""; 
-                string [] messageSplited = message.Split(" ");
+                var message = x;
+                var messageToSend = ""; 
+                var messageSplited = message.Split(" ");
                 messageToSend += "| ";
-                for (int y = 0; y < messageSplited.Length; y++)
+                for (var y = 0; y < messageSplited.Length; y++)
                 {
                     messageToSend += messageSplited[y];
                     messageToSend += " ";
                     if (y == 5)
                         messageToSend += " |\n|";
-                   
-                    
                 }
-                if( messageToSend[messageToSend.Length - 1].Equals("|") == true)
+                if(messageToSend[messageToSend.Length - 1].Equals("|") == true)
                 {
 
                 }

@@ -270,7 +270,9 @@ namespace CrazyEvents
             Console.WriteLine($"{ssnState}: {user.OrgNumber} ");
             if(user.role.Id != 1)
             {
-                Console.WriteLine($"Tickets: {userTickets.Count} ");
+                
+				
+				.WriteLine($"Tickets: {userTickets.Count} ");
             }
             
             Console.WriteLine("Press enter to go back");
@@ -328,7 +330,7 @@ namespace CrazyEvents
                             Ticket ticket = new Ticket();
                             ticket.Price = 0; // We don't use it, since we have Price as property of Event now.. so we still need to do a clean up later, get rid of this property everywhere...
                             ticket.UserID = loggedInUser.Id;
-                            ticket.EventID = events[eventNumber - 1].ID;
+                             
 
                             dataBase.addTicket(ticket);
                             Console.WriteLine("Purchase confirmed");
